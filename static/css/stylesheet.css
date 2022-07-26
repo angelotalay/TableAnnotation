@@ -1,10 +1,102 @@
+
+body{
+  background-color: #363b74;
+}
 #Upload-Form {
-  padding: 3rem;
+  padding: 5rem;
 }
 .title{
   text-align: center;
 }
 
 .container{
-  padding: 3% 15% 
+  padding: 3% 15%;
+}
+
+.navbar{
+  width=100%;
+  margin: 0 0 lem 0;
+}
+
+/* Side navigation */
+#side-nav {
+  background: #343a40;
+  min-width: 400px;
+  max-width: 400px;
+
+
+}
+.content {
+  min-height: 100vh;
+  width: 100%;
+  overflow: auto;}
+
+.sidebar-header{
+  margin-top: 10px;
+}
+.accordion-button{
+  background-color: #343a40 !important;
+}
+
+.accordion-button-text{
+  color: white;
+}
+
+.accordion-body{
+  background-color: #343a40 !important;
+  text-co
+}
+.accordion-body-text{
+  color: white;
+}
+
+
+/* Main */
+#page-content-wrapper{
+  margin: auto;
+}
+
+/* Table section */
+
+table {
+  background-color: white;
+  overflow: hidden;
+  margin: auto;
+}
+
+
+td{
+  font-size: 14px;
+}
+th{
+  font-size: 16px;
+}
+.table-title{
+  padding-top: 20px;
+  text-align: center;
+}
+
+.table-viewpoint {
+  display: inline-block;
+  padding-top: 10rem;
+}
+
+
+.genetic_variant{
+  background-color: #d3290f !important;
+}
+.significance{
+  background-color:  #52d053 !important;
+}
+.trait{
+  background-color: #e6770b !important;
+}
+
+.table-caption{
+  padding:50px;
+  background-color: #363b74;
+}
+.table-caption-text{
+  color: black;
+
 }

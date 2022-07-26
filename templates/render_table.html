@@ -1,93 +1,190 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>View Table</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/css/stylesheet.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <!-- Navigation bar -->
-    <nav class="navbar navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/"> Table Annotation </a>
+
+<head>
+  <meta charset="utf-8">
+  <title>View Table</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="../../static/css/stylesheet.css">
+
+</head>
+
+<body>
+  <!-- Navigation bar -->
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/"> Table Annotation </a>
+    </div>
+  </nav>
+
+  <!-- Side bar -->
+  <div class="main-container d-flex">
+    <div class="sidebar" id="side-nav">
+      <div class="side-header">
+        <h3 class="navbar-text navbar-dark"> View Annotations </h3>
       </div>
-    </nav>
-
-
-    <!-- Sidebar -->
-    <nav id="sidebar">
-   				<div class="p-4 pt-5">
-   					<h5>Tables</h5>
-            {% for n in range(len(table_titles)) %}
-   	        <ul class="list-unstyled components mb-5">
-   	          <li>
-   	            <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#table_menu {{n+1}}">{{table_titles[n]}}</a>
-   	            <ul class="collapse list-unstyled" id="table_menu {{n+1}}">
-                  <li>
-                    View Table
-                  </li>
-                  <li><a href="#">Caption</a></li>
-   	            </ul>
-   	          </li>
-   	        </ul>
+      <div class="sidebar-content">
+        <ul class="nav flex-column">
+          <div class="accordion accordion-flush" id="accordionFlushExample">
+            {% for n in range(len(tables)) %}
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                  <p class="accordion-button-text">{{table_titles[n]}}</p>
+                </button>
+              </h2>
+              <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                  <ul class="annotations-list">
+                    {{ annotation_summary.get_table_annotation(n) }}
+                    {% if annotation_summary.table_annotations %}
+                    {% set annotations = annotation_summary.table_annotations %}
+                    {% for annotation in annotations %}
+                    <a href="#">{{annotation['text']}}</a>
+                    {%endfor%}
+                    {% endif %}
+                  </ul>
+                  <p class="accordion-body-text">Text</p>
+                </div>
+              </div>
+            </div>
             {% endfor %}
-   	      </div>
-       	</nav>
+          </div>
 
+        </ul>
 
-    <!-- Table viewpoint -->
-    <main class=table-viewpoint>
-        <table class="table">
-          <thead>
-            <tr>
-              {% for header in headings %}
-              <th>{{header['cell_text']}}</th>
-              {% endfor %}
-            </tr>
-          </thead>
-          {% for section, rows in table_rows %}
-            {% if type(section) == int %}
-            <tr>
-              {% for cells in rows %}
-                {% set row = rows[cells] %}
-                <tr>
-                  {% for cell in row %}
-                    <td>{{cell}}</td>
-                  {% endfor %}
-                </tr>
-              {% endfor %}
-            {% endif %}
-            {% if type(section) == str %}
+      </div>
+    </div>
+    <div class="content">
+      <main id="page-content-wrapper">
+        {% for n in range(len(tables)) %}
+        <div class="table-viewpoint">
+          <table class="table table-boredered table-sm" style="width:70%; background: white;">
+            <h3 class="table-title" style="color:white;">{{table_titles[n]}}</h3>
+            <tbody>
+              {% set table_headings = headings[n] %}
               <tr>
-                <th>{{section}}</th>
+                {% for cell in table_headings %}
+                {% set cell_text = cell['cell_text'] %}
+                <th>{{cell_text}}</th>
+                {% endfor %}
+              </tr>
+              {% for section, rows in tables[n].items() %}
+              {% if type(section) == int %}
+
+              {% for cells in rows %}
+              {% set row = rows[cells] %}
+              <tr>
+
+                {% for cell in row %}
+                {% set set_cell, styling = unpack(cell) %}
+                {% set annotation_class = AnnotationsClass() %}
+                {% set obtained_annotation = annotation_class.annotation_information(cell)%}
+                {% if styling == "genetic_varaint" %}
+                <td class="{{ styling }}"> <button class="annotation-button btn btn-link" type="button" name="button" data-bs-toggle="popover" data-bs-title="Annotation Details"
+                    data-bs-content="Annotation type: {{annotation_class.type}} \n">{{set_cell}} </button></td>
+                {% elif styling == "significance" %}
+                <td class="{{ styling }}"> <button class="annotation-button btn btn-link" type="button" name="button">{{set_cell}} </button></td>
+                {% elif styling == "trait" %}
+                <td class="{{ styling }}"> <button class="annotation-button btn btn-link" type="button" name="button">{{set_cell}} </button></td>
+                {% else %}
+                <td> {{set_cell}}</td>
+                {% endif %}
+                {% endfor %}
+              </tr>
+
+              {% endfor %}
+
+              {% elif type(section) == str %}
+              <tr>
+                <th colspan="100%">{{section}}</th>
               </tr>
               {% for cells in rows %}
+              <tr>
                 {% set row = rows[cells] %}
-                <tr>
-                  {% for cell in row %}
-                  <td>{{cell}}</td>
-                  {% endfor %}
-                </tr>
+                {% for cell in row %}
+                {% set set_cell, styling = unpack(cell) %}
+                {% set annotation_class = AnnotationsClass() %}
+                {% set obtained_annotation = annotation_class.annotation_information(cell) %}
+                {% if styling == "genetic_variant" %}
+                <td class="{{ styling }}"> <button class="annotation-button btn btn-link" type="button" name="button" data-bs-toggle="modal" data-bs-target="#annotation-{{ set_cell }}">{{set_cell}} </button></td>
+                {% elif styling == "significance" %}
+                <td class="{{ styling }}"> <button class="annotation-button btn btn-link" type="button" name="button" data-bs-toggle="modal" data-bs-target="#annotation-{{ set_cell }}">{{set_cell}} </button></td>
+                {% elif styling == "trait" %}
+                <td class="{{ styling }}"> <button class="annotation-button btn btn-link" type="button" name="button" data-bs-toggle="modal" data-bs-target="#annotation-{{ set_cell }}">{{set_cell}} </button></td>
+                {% else %}
+                <td> {{set_cell}}</td>
+                {% endif %}
+                {% if obtained_annotation == True %}
+                <div class="modal fade" tabindex="-1" data-bs-toggle="modal" id="annotation-{{ set_cell }}">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Annotation details</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Annotation type: {{annotation_class.type}}</p>
+                        <p>Identifier: {{annotation_class.identifier}}</p>
+                        <p>Annotator: {{annotation_class.annotator}}</p>
+                        <p>Last updated: {{annotation_class.updated}}</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
                 {% endfor %}
+              </tr>
+
+              {% endfor %}
               {% endif %}
-            {% endfor %}
-        </table>
-    </main>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="100%" style="padding-top:40px;"> <b>Caption</b></td>
+              </tr>
+              <tr>
+                <td colspan="100%"><b class="table-caption-text">{{table_captions[n]}}</b></td>
+              </tr>
+            </tfoot>
+          </table>
+          <!-- <div class="accordion AnnotationViewPointTable" id=Table{{n}}>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="heading{{n}}">
+                <button type="button" class="accordion-button" name="button" data-bs-toggle="collapse" data-bs-target="#collapse{{n}}" aria-expanded="true" aria-controls="Table{{n}}">
+                  Table {{n+1}} Annotations
+                </button>
+              </h2>
+              <div class="accordion-collapse collapse show" id="collapse{{n}}" aria-labelledby="heading{{n}}" data-bs-parent="#Table{{n}}">
+                <div class="accordion-body">
+                  <strong>This is some placeholder text</strong>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
 
-    <!-- Select table section -->
-    <section class="select-table">
+        {%endfor%}
+      </main>
+    </div>
+  </div>
+  <!-- Table viewpoint -->
 
-
-
-    </section>
-  </body>
   <script type="text/javascript">
-    function get_table() {
-      document.getElementbyID
-    }
+    const myModal = document.getElementById('myModal')
+    const myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', () => {
+      myInput.focus()
+    })
   </script>
+</body>
+
 </html>

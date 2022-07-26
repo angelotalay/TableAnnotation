@@ -1,7 +1,8 @@
 import dataclasses
+from annotation_relations import Annotations, AnnotationSummary
 import json
 
-TEST_FILE = '/home/aagt1/PycharmProjects/TableAnnotation/PMC5300750_tables.json'
+TEST_FILE = '/home/aagt1/Downloads/TableRender_PHP/JSON/V3/PMC3775874_tables.json'
 
 
 class ObtainTables:
@@ -79,14 +80,65 @@ class ObtainTables:
             rows_dict[sect] = sect_rows
         return rows_dict
 
+    def all_table_information(self):
+        tables = []
+        headings = []
+        """ Wrapper method that obtains all table information """
+        for n in range(len(self.documents)):  # Iterate through all the tables
+            self.get_table_data(n)
+            headings.append(self.headers)
+            table_row_information = self.get_rows()
+            tables.append(table_row_information)
+        self.headers = headings
+        return tables
+
+
+def unpack_annotation(annotation_dict: dict):
+    if type(list(annotation_dict.values())[0]) == dict:
+        annotation_cell = list(annotation_dict.values())[0]
+        infons = annotation_cell['infons']
+        annotation_type = infons['type']
+        cell_text = list(annotation_dict.keys())[0]
+        if annotation_type == 'significance':
+            set_class = 'significance'
+        elif annotation_type == 'trait':
+            set_class = 'trait'
+        else:
+            set_class = 'genetic_variant'
+        return cell_text, set_class
+    elif type(list(annotation_dict.values())[0]) == str:
+        cell_text = list(annotation_dict.keys())[0]
+        return cell_text, None
+
 
 if __name__ == "__main__":
-    table = ObtainTables(TEST_FILE)
-    table.load_json()
-    table.table_summary()
-    table.get_table_data(1)
-    table_rows = table.get_rows()
-    for section, rows in table_rows.items():
-        if type(section) == int:
-            for cells in rows:
-                print(rows[cells])
+    tables = ObtainTables("/home/aagt1/Downloads/TableRender_PHP/JSON/V3/PMC3775874_tables.json")
+    tables.load_json()
+    tables.table_summary()
+    all_tables = tables.all_table_information()
+    annot_summary = AnnotationSummary(tables.json)
+    for n in range(len(all_tables)):
+        annot_summary.get_table_annotation(n)
+        print(len(annot_summary.table_annotations))
+        if annot_summary.table_annotations:
+            annotations_list = annot_summary.table_annotations
+            for annotation in annotations_list:
+                # print(annotation['text'])
+                pass
+
+        else:
+            pass
+
+        # for section, rows in all_tables[n].items():
+        #     if type(section) == int:
+        #         for cells in rows:
+        #             row = rows[cells]
+        #             for cell in row:
+        #                 annotation_class = Annotations
+        #                 obtained_annotation = annotation_class.annotation_information(cell)
+        #                 print(obtained_annotation)
+        #     elif type(section) == str:
+        #         for cells in rows:
+        #             row = rows[cells]
+        #             for cell in row:
+        #                 pass
